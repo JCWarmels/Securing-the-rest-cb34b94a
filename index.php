@@ -91,7 +91,7 @@ $films_duration = "index.php?films_duration=";
         $films_duration .= 'DESC';
     } 
 $films_duration .= $remember_sort;
-?>
+    ?>
 
 <!DOCTYPE html>
 <html>

@@ -237,7 +237,7 @@ function overlord()
         <?php
     }
 return 4;
-    }
+}
 $result = overlord();
 if ($result == 0 || $result == 2 || $result == 3) {
     echo '<h1>Error caught; Out of Bounds</h1>';
