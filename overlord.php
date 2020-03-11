@@ -2,13 +2,29 @@
 function overlord() 
 {
     if ($_GET['torun'] > 6 || $_GET['torun'] < 1) {
-        throw new Exception();
+        return 0;
+}
+    if (!isset($_COOKIE['loggedInUser'])) {
+        return 1;
 }
     $dsn = "mysql:host=localhost;dbname=netland";
     $user = "root";
     $passwd = "";
 
     $pdo = new PDO($dsn, $user, $passwd);
+    $request = $pdo->prepare("SELECT * FROM media WHERE id=?");
+    $request->execute([$_GET['id']]);
+    $to_show = $request->fetch(PDO::FETCH_ASSOC);
+    if ($to_show['media_type'] == 'serie') {
+        if ($_GET['torun'] > '3') {
+            return 2;
+        }
+    }
+    if ($to_show['media_type'] == 'movie') {
+        if ($_GET['torun'] < '4') {
+            return 3;
+        }
+    }
     if ($_GET['torun'] == '1' || $_GET['torun'] == '4') {
         $request = $pdo->prepare("SELECT * FROM media WHERE id=?");
         $request->execute([$_GET['id']]);
@@ -222,10 +238,15 @@ textarea[name=description] {
 </html>
 <?php
 }
+return 4;
 }
-try {
-    overlord();
-} catch (Exception $e) {
-    echo "Error caught; Out of Bounds";
+$result = overlord();
+if ($result == 0 || $result == 2 || $result == 3) {
+    echo '<h1>Error caught; Out of Bounds</h1>';
 }
+if ($result == 1) {
+    echo '<h1>U bent niet ingelogd, u wordt nu doorgestuurd naar de login pagina.</h1>';
+    echo "<script>setTimeout(\"location.href = '/PHP/login.php';\",1500);</script>";
+}
+
 ?>
